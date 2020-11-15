@@ -10,8 +10,6 @@ import { Badge, Card, Image, Text, ListItem, Icon, Slider, Divider, Button, Inpu
 import { MultiSlider } from '@ptomasroos/react-native-multi-slider'
 import { render } from 'react-dom';
 
-const fabText = require("./assets/fab-text.png")
-
 const actions = [
   {
     text: "Start sparring",
