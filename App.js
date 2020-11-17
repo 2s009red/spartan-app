@@ -15,6 +15,8 @@ import { useTheme } from '@react-navigation/native'
 
 import Colors from './constants/Colors';
 
+const SERVER_IP = "http://35.173.125.185"
+
 const actions = [
   {
     text: "Start sparring",
@@ -374,6 +376,17 @@ class SparringScreen extends React.Component {
             style={{ width: "80%" }}
             value={0.5}
             allowTouchTrack
+            onSlidingComplete={(value) => {
+              const data = { extension: value };
+
+              fetch(`${SERVER_IP}/sparring-config`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+              });
+            }}
           />
         </View>
         <View style={{ margin: 10, width: "100%", alignItems: 'center' }}>
@@ -382,6 +395,17 @@ class SparringScreen extends React.Component {
             style={{ width: "80%" }}
             value={0.5}
             allowTouchTrack
+            onSlidingComplete={(value) => {
+              const data = { frequency: value };
+
+              fetch(`${SERVER_IP}/sparring-config`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+              });
+            }}
           />
         </View>
         <View style={{ margin: 10, width: "100%", alignItems: 'center' }}>
@@ -390,6 +414,17 @@ class SparringScreen extends React.Component {
             style={{ width: "80%" }}
             value={0.5}
             allowTouchTrack
+            onSlidingComplete={(value) => {
+              const data = { speed: value };
+
+              fetch(`${SERVER_IP}/sparring-config`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+              });
+            }}
           />
         </View>
         <View style={{ margin: 30, flexDirection: "row", height: 50}}>
@@ -412,11 +447,33 @@ class SparringScreen extends React.Component {
             style={{ margin: 90 }}
             buttonStyle={{ backgroundColor: "red" }}
             title="Start"
+            onPress={() => {
+              const data = { spar: true };
+
+              fetch(`${SERVER_IP}/spar`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+              });
+            }}
           />
           <Button
             style={{ margin: 90 }}
             buttonStyle={{ backgroundColor: "red" }}
             title="Stop"
+            onPress={() => {
+              const data = { spar: false };
+
+              fetch(`${SERVER_IP}/spar`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+              });
+            }}
           />
         </View>
       </View>
