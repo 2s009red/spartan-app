@@ -5,10 +5,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { FloatingAction } from "react-native-floating-action";
 import { Badge, Card, Text, ListItem, Icon, Slider, Divider, Button, Input, colors, Avatar } from 'react-native-elements'
 import { MultiSlider } from '@ptomasroos/react-native-multi-slider'
-import { render } from 'react-dom';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 import { useTheme } from '@react-navigation/native'
@@ -17,28 +15,10 @@ import Colors from './constants/Colors';
 
 const SERVER_IP = "http://35.173.125.185"
 
-const actions = [
-  {
-    text: "Start sparring",
-    icon: <Icon
-      name='ios-hand'
-      type='ionicon'
-      color='#fff' />,
-    name: "fab_sparring",
-    position: 1
-  },
-  {
-    text: "Start drilling",
-    icon: <Icon
-      name='ios-list'
-      type='ionicon'
-      color='#fff' />,
-    name: "fab_drilling",
-    position: 2
-  },
-];
-
 // TODO settle on either "training" or "workout" throughout
+
+// TODO we really shouldn't make this a global, but...
+const textColor = 'rgb(225, 225, 225)'
 
 // TODO change combos
 // Map ID to combo
@@ -190,43 +170,6 @@ const getMoveDescription = (move) => {
   return `${moveSpeedDescription} speed, ${moveExtensionDescription} extension`
 }
 
-const homeScreenCards = [
-
-];
-
-// function HomeScreenCard() {
-//   const { colors } = useTheme();
-
-//   return (
-//     <ScrollView style={{ flex: 1, marginTop: 50 }}>
-//       <Text style={{ marginLeft: 20, fontSize: 40, fontWeight: "bold", color: colors.text }}>Feed</Text>
-//       <Card>
-//         <Card.Title style={{textAlign: "left"}}>Red critter shares his ultimate boxing combo</Card.Title>
-//         <Card.Image source={{ uri: "https://www.muscleandfitness.com/wp-content/uploads/2020/05/boxer-training-bag.jpg" }} />
-//         <Text style={{ marginTop: 10, }}>
-//           Watch as the red critter shares ten years of pro boxing experience, all before he became a mascot for 2.s009 2020
-//         </Text>
-//       </Card>
-//       <Card>
-//         <Card.Title style={{textAlign: "left"}}>Joush talks boxing</Card.Title>
-//         <Card.Image source={{ uri: "http://getwallpapers.com/wallpaper/full/5/f/3/103359.jpg" }} />
-//         <Text style={{ marginTop: 10 }}>
-//           blah blah blah Joush probably couldn't take on the red critter in a fight anyway so why do you care (haha jk ...unless?)
-//         </Text>
-//       </Card>
-
-//     </ScrollView>
-//   );
-// }
-
-function SettingsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Work in progress</Text>
-    </View>
-  );
-}
-
 const formatDuration = duration => {
   if (typeof duration !== "string") {
     duration = duration.toString();
@@ -246,7 +189,6 @@ class TimerInput extends React.Component {
 
   render() {
     // TODO wtf is this
-    const textColor = 'rgb(225, 225, 225)'
     return (
       <View style={{justifyContent: "center", alignItems: "center", flex: 1}}>
         <Text style={{ flex: 1, fontSize: 20, textAlign: "center", color: textColor }}>{this.props.name}</Text>
@@ -280,14 +222,10 @@ class SparringScreen extends React.Component {
   }
 
   render() {
-    // TODO apparently we can't do this
-    // const { colors } = useTheme();
-    const textColor = 'rgb(225, 225, 225)'
-
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: "space-around" }}>
         <View style={{ margin: 10, width: "100%", alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, margin: 20, color: 'rgb(225, 225, 225)'}}>Extension</Text>
+          <Text style={{ fontSize: 20, margin: 20, color: textColor }}>Extension</Text>
           <Slider
             style={{ width: "80%" }}
             value={0.5}
@@ -306,7 +244,7 @@ class SparringScreen extends React.Component {
           />
         </View>
         <View style={{ margin: 10, width: "100%", alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, margin: 20, color: 'rgb(225, 225, 225)'}}>Frequency</Text>
+          <Text style={{ fontSize: 20, margin: 20, color: textColor }}>Frequency</Text>
           <Slider
             style={{ width: "80%" }}
             value={0.5}
@@ -325,7 +263,7 @@ class SparringScreen extends React.Component {
           />
         </View>
         <View style={{ margin: 10, width: "100%", alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, margin: 20, color: 'rgb(225, 225, 225)'}}>Speed</Text>
+          <Text style={{ fontSize: 20, margin: 20, color: textColor }}>Speed</Text>
           <Slider
             style={{ width: "80%" }}
             value={0.5}
@@ -397,26 +335,6 @@ class SparringScreen extends React.Component {
   }
 }
 
-function ComboCard() {
-  return (
-
-    <ListItem
-      onPress={() => console.log('press')}
-    >
-      <ListItem.Content>
-        <ListItem.Title style={{ fontWeight: 'bold' }}>
-          Chris Jackson
-        </ListItem.Title>
-        <ListItem.Subtitle style={{}}>
-          Vice Chairman
-        </ListItem.Subtitle>
-      </ListItem.Content>
-      <ListItem.Chevron color="white" />
-    </ListItem>
-
-  );
-}
-
 function FeedCard(props) {
   const { colors } = useTheme();
   // do we want to add a profile picture somewhere?
@@ -478,14 +396,6 @@ const WorkoutScreen = () => (
     <ComboStack.Screen name="WorkoutDetail" component={WorkoutDetailScreen} />
     <ComboStack.Screen name="Sparring" component={SparringScreen} />
     <ComboStack.Screen name="PunchToStart" component={PunchToStartScreen} />
-  </ComboStack.Navigator>
-);
-
-const CombosScreen = () => (
-  <ComboStack.Navigator>
-    <ComboStack.Screen name="ComboList"  component={ComboListScreen} />
-    <ComboStack.Screen name="ComboEditor" component={ComboEditorScreen} />
-    <ComboStack.Screen name="MoveEditor" component={MoveEditorScreen} />
   </ComboStack.Navigator>
 );
 
