@@ -154,90 +154,6 @@ function WorkoutListScreen({ navigation }) {
   );
 }
 
-// function DrillingScreen({ navigation }) {
-//   return (
-//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//       <Text>work in progress</Text>
-//       <FloatingAction
-//         actions={actions}
-//         floatingIcon={
-//           <Icon
-//             name='ios-play'
-//             type='ionicon'
-//             color='#fff' />
-//         }
-//         onPressItem={name => {
-//           console.log(`selected button: ${name}`);
-//         }}
-//       />
-
-//     </View>
-//   );
-// }
-
-// function ComboListScreen({ navigation }) {
-//   return (
-//     <View>
-//       {/* {combos.entries().map((item, i) => ( */}
-//     </View>
-//   );
-// }
-/*
-function ComboEditorScreen({ route, navigation }) {
-  return (
-    <View style={{alignItems: "center"}}>
-      {route.params.combo.moves.map((move, i) => 
-        <ListItem bottomDivider style={{width: "80%"}} key={i}  onPress={() => navigation.navigate('MoveEditor', { id: i, move: move })}>
-          <Badge
-            value={i + 1}
-            status="success"
-          />
-
-          <ListItem.Content>
-            <ListItem.Title style={{ fontWeight: "bold" }}>{move.name}</ListItem.Title>
-            <ListItem.Subtitle>{getMoveDescription(move)}</ListItem.Subtitle>
-          </ListItem.Content>
-          <ListItem.Chevron />
-        </ListItem>
-      )}
-      <Button style={{margin: 50}}
-        title="Start combo">
-      </Button>
-    </View>
-  );
-}
-
-function MoveEditorScreen({ route, navigation }) {
-  return (
-    <View>
-      <View style={{ margin: 10, width: "100%", alignItems: 'center' }}>
-        <Text style={{ fontSize: 20, margin: 20 }}>Speed</Text>
-        <Slider
-          style={{ width: "80%" }}
-          value={0.5}
-          allowTouchTrack={true}
-        />
-      </View>
-      <View style={{ margin: 10, width: "100%", alignItems: 'center' }}>
-        <Text style={{ fontSize: 20, margin: 20 }}>Extension</Text>
-        <Slider
-          style={{ width: "80%" }}
-          value={0.5}
-          allowTouchTrack={true}
-        />
-      </View>
-      <View style={{ margin: 10, width: "100%", alignItems: 'center' }}>
-        <Text style={{ fontSize: 20, margin: 20 }}>Pause</Text>
-        <Slider
-          style={{ width: "80%" }}
-          value={0.5}
-          allowTouchTrack={true}
-        />
-      </View>
-    </View>
-  );
-}
-*/
 const getMoveDescription = (move) => {
   let moveSpeedDescription;
   let moveExtensionDescription;
@@ -594,31 +510,6 @@ export default function App() {
             tabBarIcon: ({ color }) => <Icon name="trending-up" color={color} />,
           }}
         />
-        {/* <Tab.Screen name="Home" component={HomeScreen} 
-          options={{
-            tabBarIcon: ({ color }) => <Icon name="home" color={color} />,
-          }}
-        />
-        <Tab.Screen name="Friends" component={SettingsScreen} 
-          options={{
-            tabBarIcon: ({ color }) => <Icon name="people" color={color} />,
-          }}
-        />
-        <Tab.Screen name="Combos" component={CombosScreen} 
-          options={{
-            tabBarIcon: ({ color }) => <Icon name="list" color={color} />,
-          }}
-        />
-        <Tab.Screen name="Sparring" component={SparringScreen}
-          options={{
-            tabBarIcon: ({ color }) => <Icon name="fist-raised" color={color} type="font-awesome-5" />,
-          }}
-        />
-        <Tab.Screen name="Drilling" component={DrillingScreen}
-          options={{
-            tabBarIcon: ({ color }) => <Icon name="fist-raised" color={color} type="font-awesome-5" />,
-          }}
-        /> */}
       </Tab.Navigator>
     </NavigationContainer>
   );
