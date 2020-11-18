@@ -96,7 +96,22 @@ function PunchToStartScreen({ route, navigation }) {
 
   return (
     <View style={{ justifyContent: "center", alignItems: "center" }}>
-      <Text style={{ fontSize: 50 }}>Punch to start</Text>
+      <Text style={{ fontSize: 50, color: colors.text }}>Punch to start</Text>
+      <Text style={{ fontSize: 30, color: colors.text }}>[insert animation here]</Text>
+      <Button buttonStyle={{ backgroundColor: colors.primary, borderRadius: 15 }} title="Stop training" 
+        onPress={() => {
+          const data = { spar: false };
+
+          fetch(`${SERVER_IP}/spar`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          });
+
+          navigation.navigate("WorkoutListScreen")
+        }} />
     </View>
   );
 }
@@ -313,22 +328,6 @@ class SparringScreen extends React.Component {
               });
             }}
           />
-          <Button
-            style={{ margin: 90 }}
-            buttonStyle={{ backgroundColor: "red" }}
-            title="Stop"
-            onPress={() => {
-              const data = { spar: false };
-
-              fetch(`${SERVER_IP}/spar`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-              });
-            }}
-          />
         </View>
       </View>
     );
@@ -373,7 +372,8 @@ function ActivityScreen() {
   return (
 
     <View>
-      <Text style={{ fontSize: 50, color: colors.text }}>Recent trainings</Text>
+      <Text style={{ fontSize: 50, color: colors.text }}>debug screen</Text>
+      <Text style={{ fontSize: 50, color: colors.text }}>DO NOT SHOW DURING DEMO</Text>
     </View>
 
   );
@@ -382,20 +382,21 @@ function ActivityScreen() {
 
 const Tab = createBottomTabNavigator();
 const ComboStack = createStackNavigator();
+const FeedStack = createStackNavigator();
 
 // TODO wtf this is terrible
 const FeedScreen = () => (
-  <ComboStack.Navigator>
-    <ComboStack.Screen name="HomeScreen" component={HomeScreen} />
-  </ComboStack.Navigator>
+  <FeedStack.Navigator>
+    <FeedStack.Screen name="HomeScreen" component={HomeScreen} />
+  </FeedStack.Navigator>
 );
 
 const WorkoutScreen = () => (
   <ComboStack.Navigator>
-    <ComboStack.Screen name="WorkoutList" component={WorkoutListScreen} />
-    <ComboStack.Screen name="WorkoutDetail" component={WorkoutDetailScreen} />
-    <ComboStack.Screen name="Sparring" component={SparringScreen} />
-    <ComboStack.Screen name="PunchToStart" component={PunchToStartScreen} />
+    <ComboStack.Screen name="WorkoutList" component={WorkoutListScreen} options={{ title: "Workouts" }} />
+    <ComboStack.Screen name="WorkoutDetail" component={WorkoutDetailScreen} options={{ title: "Workout" }} />
+    <ComboStack.Screen name="Sparring" component={SparringScreen} options={{ title: "Sparring" }} />
+    <ComboStack.Screen name="PunchToStart" component={PunchToStartScreen} options={{ title: "Punch to start" }} />
   </ComboStack.Navigator>
 );
 
@@ -404,7 +405,7 @@ export default function App() {
 
   return (
     <NavigationContainer theme={MyTheme}>
-      <Tab.Navigator initialRouteName="Combos">
+      <Tab.Navigator initialRouteName="Workouts">
         <Tab.Screen name="Feed" component={FeedScreen} 
           options={{
             tabBarIcon: ({ color }) => <Icon name="home" color={color} />,
