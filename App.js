@@ -23,8 +23,9 @@ const textColor = 'rgb(225, 225, 225)'
 // TODO change combos
 // Map ID to combo
 const combos = new Map();
-combos.set(0, { title: "Joush's combo", description: loremIpsum, id: 0, moves: [{name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}, {name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}], duration: 45 });
-combos.set(1, { title: "Red critter's combo", description: loremIpsum, id: 1, moves: [{name: "quick jab", speed: 1, extension: 1, duration: 1}, {name: "full punch", speed: 0.5, extension: 0.4, duration: 1}], duration: 185 });
+combos.set(0, { title: "Flora's warmup", description: loremIpsum, id: 0, moves: [{name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}, {name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}], duration: 45 });
+combos.set(1, { title: "Joush's warmup", description: loremIpsum, id: 0, moves: [{name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}, {name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}], duration: 45 });
+combos.set(2, { title: "Drew's warmup", description: loremIpsum, id: 1, moves: [{name: "quick jab", speed: 1, extension: 1, duration: 1}, {name: "full punch", speed: 0.5, extension: 0.4, duration: 1}], duration: 185 });
 
 let comboCardObj = { name: "Josh's Favorite Combo", author: "Joush Padilla" }
 
@@ -110,7 +111,7 @@ function PunchToStartScreen({ route, navigation }) {
             body: JSON.stringify(data),
           });
 
-          navigation.navigate("WorkoutListScreen")
+          navigation.navigate("WorkoutList")
         }} />
     </View>
   );
@@ -124,7 +125,21 @@ function WorkoutDetailScreen({ route, navigation }) {
   return (
     <ScrollView>
       <WorkoutCard combo={route.params.combo} key={route.params.id} numToShow={undefined} />
-      <Button buttonStyle={{ backgroundColor: colors.primary, borderRadius: 15 }} title="Start training" onPress={() => navigation.navigate("PunchToStart")} />
+      <Button buttonStyle={{ backgroundColor: colors.primary, borderRadius: 15 }} title="Start training" onPress={
+          () => {
+            const data = { spar: true };
+
+            fetch(`${SERVER_IP}/spar`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data),
+            });
+
+            navigation.navigate("PunchToStart")
+          }
+        } />
     </ScrollView>
   );
 }
@@ -239,63 +254,7 @@ class SparringScreen extends React.Component {
   render() {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: "space-around" }}>
-        <View style={{ margin: 10, width: "100%", alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, margin: 20, color: textColor }}>Extension</Text>
-          <Slider
-            style={{ width: "80%" }}
-            value={0.5}
-            allowTouchTrack
-            onSlidingComplete={(value) => {
-              const data = { extension: value };
-
-              fetch(`${SERVER_IP}/sparring-config`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-              });
-            }}
-          />
-        </View>
-        <View style={{ margin: 10, width: "100%", alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, margin: 20, color: textColor }}>Frequency</Text>
-          <Slider
-            style={{ width: "80%" }}
-            value={0.5}
-            allowTouchTrack
-            onSlidingComplete={(value) => {
-              const data = { frequency: value };
-
-              fetch(`${SERVER_IP}/sparring-config`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-              });
-            }}
-          />
-        </View>
-        <View style={{ margin: 10, width: "100%", alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, margin: 20, color: textColor }}>Speed</Text>
-          <Slider
-            style={{ width: "80%" }}
-            value={0.5}
-            allowTouchTrack
-            onSlidingComplete={(value) => {
-              const data = { speed: value };
-
-              fetch(`${SERVER_IP}/sparring-config`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-              });
-            }}
-          />
-        </View>
+        <Text style={{ color: textColor }}>difficulty</Text>
         <View style={{ margin: 30, flexDirection: "row", height: 50}}>
           <TimerInput name="round time" time="3:00" />
           <TimerInput name="rest time" time="0:30" />
@@ -326,6 +285,8 @@ class SparringScreen extends React.Component {
                 },
                 body: JSON.stringify(data),
               });
+              
+              this.props.navigation.navigate("WorkoutList")
             }}
           />
         </View>
