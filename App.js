@@ -366,7 +366,7 @@ export default function App() {
 
   return (
     <NavigationContainer theme={MyTheme}>
-      <Tab.Navigator initialRouteName="Workouts">
+      <Tab.Navigator initialRouteName="Feed">
         <Tab.Screen name="Feed" component={FeedScreen} 
           options={{
             tabBarIcon: ({ color }) => <Icon name="home" color={color} />,
