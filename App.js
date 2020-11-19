@@ -7,7 +7,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { Badge, Card, Text, ListItem, Icon, Button, Input, Avatar } from 'react-native-elements'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import DateTimePicker from '@react-native-community/datetimepicker';
 
 import { useTheme } from '@react-navigation/native'
 
@@ -23,27 +22,28 @@ const textColor = 'rgb(225, 225, 225)'
 // TODO change combos
 // Map ID to combo
 const combos = new Map();
-combos.set(0, { title: "Flora's warmup", description: loremIpsum, id: 0, moves: [{name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}, {name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}], duration: 45 });
-combos.set(1, { title: "Joush's warmup", description: loremIpsum, id: 0, moves: [{name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}, {name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}], duration: 45 });
-combos.set(2, { title: "Drew's warmup", description: loremIpsum, id: 1, moves: [{name: "quick jab", speed: 1, extension: 1, duration: 1}, {name: "full punch", speed: 0.5, extension: 0.4, duration: 1}], duration: 185 });
+combos.set(0, { title: "Flora's warmup", user: "flora", id: 0, moves: [{name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}, {name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}], duration: 45 });
+combos.set(1, { title: "Joush's warmup", user: "joush", id: 0, moves: [{name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}, {name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}], duration: 45 });
+combos.set(2, { title: "Drew's warmup", user: "drew", id: 1, moves: [{name: "quick jab", speed: 1, extension: 1, duration: 1}, {name: "full punch", speed: 0.5, extension: 0.4, duration: 1}], duration: 185 });
+
+const users = new Map();
+users.set("flora", { name: "Flora Klise", description: "Spartan expert", picture: "https://firebasestorage.googleapis.com/v0/b/mit2s009.appspot.com/o/profiles%2Fthumb_fklise.jpg?alt=media&token=d3e7040e-4838-477d-9df2-7deb850a76b1" })
+users.set("drew", { name: "Drew Callahan", description: "Spartan beginner", picture: "https://firebasestorage.googleapis.com/v0/b/mit2s009.appspot.com/o/profiles%2Fthumb_andrewbc.jpg?alt=media&token=c7315a11-e854-4686-bf6f-26926f3270f1" })
+users.set("joush", { name: "Joush Padilla", description: "Spartan extraordinaire", picture: "https://firebasestorage.googleapis.com/v0/b/mit2s009.appspot.com/o/profiles%2Fthumb_jgp7.jpg?alt=media&token=98bc24c8-fdb7-4221-876a-323a1ef748a7" })
 
 function secondsToTimestring(seconds) {
   return `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`
 }
 
-const loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris";
-const drewPicture = "https://firebasestorage.googleapis.com/v0/b/mit2s009.appspot.com/o/profiles%2Fthumb_andrewbc.jpg?alt=media&token=c7315a11-e854-4686-bf6f-26926f3270f1";
-const joushPicture = "https://firebasestorage.googleapis.com/v0/b/mit2s009.appspot.com/o/profiles%2Fthumb_jgp7.jpg?alt=media&token=98bc24c8-fdb7-4221-876a-323a1ef748a7"
-
 function AvatarWithSubtitle(props) {
   const { colors } = useTheme();
 
   return (
-    <View style={{ flexDirection: "row", justifyContent: "flex-start", width: "100%" }}>
-      <Avatar rounded source={{ uri: props.uri }} />
-      <View style={{ flexDirection: "column", marginLeft: 10 }}>
-        <Text style={{ color: colors.text, fontWeight: "800" }}>{props.name}</Text>
-        <Text style={{ color: colors.text }}>{props.subtitle}</Text>
+    <View style={{ flexDirection: props.reversed ? "row-reverse" : "row", justifyContent: "flex-start", marginBottom: 10 }}>
+      <Avatar rounded size="medium" source={{ uri: props.uri }} />
+      <View style={{ flexDirection: "column", marginHorizontal: 10, justifyContent: "center" }}>
+        <Text style={[ styles.text, styles.usernameText, { textAlign: props.reversed ? "right" : "left" }]}>{props.name}</Text>
+        <Text style={[ styles.text, { textAlign: props.reversed ? "right" : "left" }]}>{props.subtitle}</Text>
       </View>
     </View>
   );
@@ -55,10 +55,20 @@ function WorkoutCard(props) {
   // TODO should calculate combo length (duration) on the fly?
   // TODO this is limited to 3 for display purposes; we should animate this properly when user expands it
   // TODO why numToShow
+  const user = users.get(props.combo.user);
+
   return (
-    <View style={{ marginBottom: 20, padding: 20, borderRadius: 15, backgroundColor: 'rgb(40, 40, 40)'}}>
-      <Text style={{ color: colors.text, fontSize: 24, fontWeight: 'bold' }}>{props.combo.title}</Text>
-      <Text style={{ color: colors.text, marginBottom: 20 }}>{props.combo.moves.length} moves, {secondsToTimestring(props.combo.duration)} minutes</Text>
+    <View style={{ marginBottom: 30, padding: 20, borderRadius: 15, backgroundColor: 'rgb(40, 40, 40)'}}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <View style={{ flexDirection: "column" }}>
+          <Text style={{ color: colors.text, fontSize: 24, fontWeight: 'bold' }}>{props.combo.title}</Text>
+          <Text style={{ color: colors.text, marginBottom: 20 }}>{props.combo.moves.length} moves, {secondsToTimestring(props.combo.duration)} minutes</Text>
+        </View>
+        <View>
+          
+      <AvatarWithSubtitle reversed subtitle={user.description} name={user.name} uri={user.picture} />
+        </View>
+      </View>
 
       <View style={{ backgroundColor: 'rgb(60, 60, 60)', borderRadius: 15 }}>
       {props.combo.moves.slice(0, props.numToShow).map((move, i) => 
@@ -71,7 +81,6 @@ function WorkoutCard(props) {
 
 function ComboListItem(props) {
   const { colors } = useTheme();
-  // TODO change color of badges and do not rely on 'error'
   return (
     <ListItem containerStyle={{ borderRadius: 15, backgroundColor: 'rgb(60, 60, 60)' }}>
       <Badge
@@ -144,6 +153,9 @@ function WorkoutListScreen({ navigation }) {
 
   return (
     <ScrollView contentContainerStyle={ styles.container }>
+      <Text style={[ styles.text, styles.title ]}>
+        Workouts
+      </Text>
       <Button buttonStyle={ styles.button } onPress={() => navigation.navigate("Sparring")} title="Start sparring" />
         <Text style={{ color: colors.text, textAlign: "center" }}>or choose from a workout below</Text>
         {Array.from(combos, ([k, v]) =>
@@ -199,13 +211,19 @@ const formatDuration = duration => {
   return `${duration.slice(0, duration.length - 2).padStart(1, '0')}:${duration.slice(duration.length - 2).padStart(2, '0')}`
 }
 
+function SparringCard() {
+  return (
+    <View>
+      Jump right into a session with randomized [something]. We'll [something]. You bring the moves, we'll bring the [something].
+    </View>
+  );
+}
+
 class SparringScreen extends React.Component {
   // TODO should we save default values from last time, to use this time?
   state = {
     // TODO what order should these be in? also what order on the screen
-    extension: 1,
-    speed: 1,
-    frequency: 1,
+    difficulty: 1,
 
     roundTime: "300",
     restTime: 30,
@@ -214,16 +232,45 @@ class SparringScreen extends React.Component {
 
   render() {
     return (
-      <View style={ styles.container }>
-        <Text style={{ color: textColor }}>difficulty</Text>
-                  <DateTimePicker
-          testID="dateTimePicker"
-          is24Hour={true}
-          display="default"
-          value={new Date()}
-          mode="countdown"
-        />
-        <View style={{ margin: 30, flexDirection: "row", height: 50}}>
+      <View style={styles.container}>
+
+        <View style={{ backgroundColor: 'rgb(40, 40, 40)', padding: 20, borderRadius: 15 }}>
+          <Text style={[ styles.text, { fontSize: 40, fontWeight: '600' } ]}>Intensity</Text>
+          <View>
+            <ListItem onPress={() => this.setState({ difficulty: 0 })}
+              containerStyle={{ backgroundColor: this.state.difficulty === 0 ? 'rgb(60, 60, 60)' : 'rgb(40, 40, 40)', borderRadius: 15 }} >
+              <Icon name="thermometer-empty" type="font-awesome" color='rgb(225, 225, 225)' size={35} />
+              <ListItem.Content>
+                <ListItem.Title style={styles.text}>Low</ListItem.Title>
+              </ListItem.Content>
+              {this.state.difficulty == 0 &&
+                <ListItem.CheckBox checked checkedIcon="check" checkedColor='rgb(233, 37, 43)' />
+              }
+            </ListItem>
+            <ListItem onPress={() => this.setState({ difficulty: 1 })}
+              containerStyle={{ backgroundColor: this.state.difficulty === 1 ? 'rgb(60, 60, 60)' : 'rgb(40, 40, 40)', borderRadius: 15 }} >
+              <Icon name="thermometer-half" type="font-awesome" color='rgb(225, 225, 225)' size={35} />
+              <ListItem.Content>
+                <ListItem.Title style={styles.text}>Medium</ListItem.Title>
+              </ListItem.Content>
+              {this.state.difficulty == 1 &&
+                <ListItem.CheckBox checked checkedIcon="check" checkedColor='rgb(233, 37, 43)' />
+              }
+            </ListItem>
+            <ListItem onPress={() => this.setState({ difficulty: 2 })}
+              containerStyle={{ backgroundColor: this.state.difficulty === 2 ? 'rgb(60, 60, 60)' : 'rgb(40, 40, 40)', borderRadius: 15 }} >
+              <Icon name="thermometer-full" type="font-awesome" color='rgb(225, 225, 225)' size={35} />
+              <ListItem.Content>
+                <ListItem.Title style={styles.text}>High</ListItem.Title>
+              </ListItem.Content>
+              {this.state.difficulty == 2 &&
+                <ListItem.CheckBox checked checkedIcon="check" checkedColor='rgb(233, 37, 43)' />
+              }
+            </ListItem>
+          </View>
+        </View>
+
+        <View style={{ margin: 30, flexDirection: "row", height: 50 }}>
           {/* <TimerInput name="round time" time="3:00" />
           <TimerInput name="rest time" time="0:30" /> */}
 
@@ -238,10 +285,10 @@ class SparringScreen extends React.Component {
             />
           </View>
         </View>
-        <View style={{flexDirection: "row"}}>
           <Button
-            buttonStyle={ styles.button }
-            title="Start"
+            buttonStyle={[ styles.button, { width: "50%", alignSelf: "center" } ]}
+            titleStyle={[ styles.text, { fontSize: 30 } ]}
+            title="Start training"
             onPress={() => {
               const data = { spar: true };
 
@@ -256,7 +303,6 @@ class SparringScreen extends React.Component {
               this.props.navigation.navigate("PunchToStart")
             }}
           />
-        </View>
       </View>
     );
   }
@@ -269,13 +315,19 @@ function FeedCard(props) {
   // TODO this is limited to 3 for display purposes; we should animate this properly when user expands it
   // TODO why numToShow
   return (
-    <View style={{ padding: 20, borderRadius: 15, backgroundColor: 'rgb(40, 40, 40)'}}>
+    <View style={{ padding: 20, borderRadius: 15, marginBottom: 30, backgroundColor: 'rgb(40, 40, 40)'}}>
       <AvatarWithSubtitle subtitle={props.subtitle} name={props.name} uri={props.picture} />
-      <View style={{ backgroundColor: 'rgb(60, 60, 60)', marginTop: 10, borderRadius: 15, flexDirection: "row", alignItems: "center", width: "100%" }}>
-        <Image source={ require('./assets/achievement-trophy.png') } 
-          style={{ width: 50, height: 50 }}
-        />
-        <Text style={{ color: colors.text, fontSize: 15, padding: 10 }}>{props.description}</Text>
+      <View style={{ backgroundColor: 'rgb(60, 60, 60)',  borderRadius: 15, flexDirection: "row", alignItems: "center", width: "100%" }}>
+        {props.achievement && <Image source={ require('./assets/achievement-trophy.png') } 
+          style={{ width: 50, height: 50, margin: 10 }}
+        />}
+        <View style={{ flexDirection: "column", justifyContent: "flex-start" }}>
+        {props.title && <Text style={{ color: colors.text, fontSize: 20, fontWeight: "600", marginHorizontal: 10,  }}>{props.title}</Text>}
+        <Text style={{ color: colors.text, fontSize: 15, margin: 10 }}>{props.description}</Text>
+        {props.photo && <Image source={{ uri: props.photo }} 
+          style={{ width: "100%", height: 400 }}
+        />}
+        </View>
 
       </View>
     </View>
@@ -285,11 +337,14 @@ function FeedCard(props) {
 function FeedScreen() {
   return (
     <ScrollView contentContainerStyle={ styles.container }>
-      <FeedCard subtitle="earned an achievement" description={loremIpsum} name="Joush Padilla" picture={joushPicture} />
-      <FeedCard subtitle="earned an achievement" description={loremIpsum} name="Drew Callahan" picture={drewPicture} />
-      <FeedCard subtitle="did a thing" description={loremIpsum} name="Joush Padilla" picture={joushPicture} />
-      <FeedCard subtitle="something else" description={loremIpsum} name="Joush Padilla" picture={joushPicture} />
-      <FeedCard subtitle="earned an achievement" description={loremIpsum} name="Joush Padilla" picture={joushPicture} />
+      <Text style={[ styles.text, styles.title ]}>
+        Feed
+      </Text>
+      <FeedCard subtitle="earned an achievement" description="Top your local Spartan leaderboards for three weeks in a row" title="Spartan master" name="Joush Padilla" picture={users.get('joush').picture} achievement />
+      <FeedCard subtitle="posted some photos" description="Got a pretty sweet workout with Spartan today!" name="Drew Callahan" picture={users.get('drew').picture} photo={"https://i.imgur.com/vYtb2ya.jpg"} />
+      <FeedCard subtitle="did a thing" description="description wow look a description" name="Joush Padilla" picture={users.get('joush').picture} />
+      <FeedCard subtitle="something else" description="description wow look a description" name="Joush Padilla" picture={users.get('joush').picture} />
+      <FeedCard subtitle="earned an achievement" description="description wow look a description" name="Joush Padilla" picture={users.get('joush').picture} />
     </ScrollView>
   );
 }
@@ -365,18 +420,25 @@ const styles = StyleSheet.create({
     color: 'rgb(225, 225, 225)',
   },
 
+  usernameText: {
+    color: 'rgb(225, 225, 225)',
+    fontWeight: "800",
+  },
+
   button: {
     borderRadius: 15,
     backgroundColor: 'rgb(233, 37, 43)'
   },
   
   container: { 
-    margin: "5%%",
+    margin: "5%",
+    marginTop: "2%"
   },
 
   title: {
     fontSize: 50,
     fontWeight: "800",
+    marginBottom: "2%"
   }
 });
 
