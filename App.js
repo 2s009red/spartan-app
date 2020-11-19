@@ -286,7 +286,7 @@ class SparringScreen extends React.Component {
                 body: JSON.stringify(data),
               });
               
-              this.props.navigation.navigate("WorkoutList")
+              this.props.navigation.navigate("PunchToStart")
             }}
           />
         </View>
