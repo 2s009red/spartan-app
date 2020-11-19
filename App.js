@@ -21,6 +21,7 @@ const textColor = 'rgb(225, 225, 225)'
 
 // TODO change combos
 // Map ID to combo
+// TODO figure out this text
 const combos = new Map();
 combos.set(0, { title: "Flora's warmup", user: "flora", id: 0, moves: [{name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}, {name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}], duration: 45 });
 combos.set(1, { title: "Joush's warmup", user: "joush", id: 0, moves: [{name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}, {name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}], duration: 45 });
@@ -127,8 +128,11 @@ function WorkoutDetailScreen({ route, navigation }) {
 
   return (
     <ScrollView contentContainerStyle={ styles.container }>
+      <Text style={[ styles.text, styles.title ]}>
+        Start workout
+      </Text>
       <WorkoutCard combo={route.params.combo} key={route.params.id} numToShow={undefined} />
-      <Button buttonStyle={ styles.button } title="Start training" onPress={
+      <Button buttonStyle={[ styles.button, styles.trainingButton ]} title="Begin training" onPress={
           () => {
             const data = { spar: true };
 
@@ -233,10 +237,13 @@ class SparringScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+      <Text style={[ styles.text, styles.title ]}>
+        Sparring
+      </Text>
 
         <View style={{ backgroundColor: 'rgb(40, 40, 40)', padding: 20, borderRadius: 15 }}>
-          <Text style={[ styles.text, { fontSize: 40, fontWeight: '600' } ]}>Intensity</Text>
           <View>
+            <Text style={[ styles.text, { fontSize: 30, fontWeight: '600' } ]}>Intensity</Text>
             <ListItem onPress={() => this.setState({ difficulty: 0 })}
               containerStyle={{ backgroundColor: this.state.difficulty === 0 ? 'rgb(60, 60, 60)' : 'rgb(40, 40, 40)', borderRadius: 15 }} >
               <Icon name="thermometer-empty" type="font-awesome" color='rgb(225, 225, 225)' size={35} />
@@ -275,6 +282,26 @@ class SparringScreen extends React.Component {
           <TimerInput name="rest time" time="0:30" /> */}
 
           <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 20, textAlign: "center", color: textColor }}>round time</Text>
+            <Input containerStyle={{ flex: 1 }} inputContainerStyle={{ borderBottomWidth: 0 }}
+              style={{ textAlign: "center", fontSize: 30, color: textColor }}
+              keyboardType="numeric"
+
+              returnKeyType="done"
+              defaultValue={"3:00"}
+            />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 20, textAlign: "center", color: textColor }}>rest time</Text>
+            <Input containerStyle={{ flex: 1 }} inputContainerStyle={{ borderBottomWidth: 0 }}
+              style={{ textAlign: "center", fontSize: 30, color: textColor }}
+              keyboardType="numeric"
+
+              returnKeyType="done"
+              defaultValue={"0:30"}
+            />
+          </View>
+          <View style={{ flex: 1 }}>
             <Text style={{ fontSize: 20, textAlign: "center", color: textColor }}>num rounds</Text>
             <Input containerStyle={{ flex: 1 }} inputContainerStyle={{ borderBottomWidth: 0 }}
               style={{ textAlign: "center", fontSize: 30, color: textColor }}
@@ -286,7 +313,7 @@ class SparringScreen extends React.Component {
           </View>
         </View>
           <Button
-            buttonStyle={[ styles.button, { width: "50%", alignSelf: "center" } ]}
+            buttonStyle={[ styles.button, styles.trainingButton ]}
             titleStyle={[ styles.text, { fontSize: 30 } ]}
             title="Start training"
             onPress={() => {
@@ -308,6 +335,22 @@ class SparringScreen extends React.Component {
   }
 }
 
+function FeedPhotoCard(props) {
+  const { colors } = useTheme();
+
+  return (
+    <View style={{ padding: 20, borderRadius: 15, marginBottom: 30, backgroundColor: 'rgb(40, 40, 40)'}}>
+      <AvatarWithSubtitle subtitle={props.subtitle} name={props.name} uri={props.picture} />
+      <View style={{ flexDirection: "row", alignItems: "center", width: "100%", justifyContent: "space-between" }}>
+        {props.photos.map(photo => <Image source={{ uri: photo }} 
+          style={{ width: 340, height: 400, overflow: "hidden", borderRadius: 15 }}
+        />)}
+
+      </View>
+    </View>
+  );
+}
+
 function FeedCard(props) {
   const { colors } = useTheme();
   // do we want to add a profile picture somewhere?
@@ -324,11 +367,7 @@ function FeedCard(props) {
         <View style={{ flexDirection: "column", justifyContent: "flex-start" }}>
         {props.title && <Text style={{ color: colors.text, fontSize: 20, fontWeight: "600", marginHorizontal: 10,  }}>{props.title}</Text>}
         <Text style={{ color: colors.text, fontSize: 15, margin: 10 }}>{props.description}</Text>
-        {props.photo && <Image source={{ uri: props.photo }} 
-          style={{ width: "100%", height: 400 }}
-        />}
         </View>
-
       </View>
     </View>
   );
@@ -341,10 +380,8 @@ function FeedScreen() {
         Feed
       </Text>
       <FeedCard subtitle="earned an achievement" description="Top your local Spartan leaderboards for three weeks in a row" title="Spartan master" name="Joush Padilla" picture={users.get('joush').picture} achievement />
-      <FeedCard subtitle="posted some photos" description="Got a pretty sweet workout with Spartan today!" name="Drew Callahan" picture={users.get('drew').picture} photo={"https://i.imgur.com/vYtb2ya.jpg"} />
-      <FeedCard subtitle="did a thing" description="description wow look a description" name="Joush Padilla" picture={users.get('joush').picture} />
-      <FeedCard subtitle="something else" description="description wow look a description" name="Joush Padilla" picture={users.get('joush').picture} />
-      <FeedCard subtitle="earned an achievement" description="description wow look a description" name="Joush Padilla" picture={users.get('joush').picture} />
+      <FeedPhotoCard subtitle="posted some photos" description="Got a pretty sweet workout with Spartan today!" name="Drew Callahan" picture={users.get('drew').picture} photos={["https://i.imgur.com/vYtb2ya.jpg", "https://i.imgur.com/F9LGY06.jpg"]} />
+      <FeedCard subtitle="earned an achievement" description="Beat the red critter in a boxing match" title="Spartacus" name="Joush Padilla" picture={users.get('joush').picture} achievement />
     </ScrollView>
   );
 }
@@ -353,7 +390,6 @@ function ActivityScreen() {
   const { colors } = useTheme();
 
   return (
-
     <View style={ styles.container }>
       <Text style={{ fontSize: 50, color: colors.text }}>debug screen</Text>
       <Text style={{ fontSize: 50, color: colors.text }}>DO NOT SHOW DURING DEMO</Text>
@@ -362,7 +398,6 @@ function ActivityScreen() {
           fetch(`${SERVER_IP}/punch`);
         }} />
     </View>
-
   );
 }
 
@@ -373,17 +408,29 @@ const FeedStack = createStackNavigator();
 
 // TODO wtf this is terrible
 const Feed = () => (
-  <FeedStack.Navigator>
-    <FeedStack.Screen name="FeedScreen" component={FeedScreen}  options={{ title: "Feed" }} />
+  <FeedStack.Navigator screenOptions={{
+    headerStyle: {
+      backgroundColor: 'rgb(233, 37, 43)'
+    },
+
+    headerTintColor: 'rgb(225, 225, 225)',
+  }}>
+    <FeedStack.Screen name="FeedScreen" component={FeedScreen}  options={{ title: "" }} />
   </FeedStack.Navigator>
 );
 
 const WorkoutScreen = () => (
-  <ComboStack.Navigator>
-    <ComboStack.Screen name="WorkoutList" component={WorkoutListScreen} options={{ title: "Workouts" }} />
-    <ComboStack.Screen name="WorkoutDetail" component={WorkoutDetailScreen} options={{ title: "Workout" }} />
-    <ComboStack.Screen name="Sparring" component={SparringScreen} options={{ title: "Sparring" }} />
-    <ComboStack.Screen name="PunchToStart" component={PunchToStartScreen} options={{ title: "Punch to start" }} />
+  <ComboStack.Navigator screenOptions={{
+    headerStyle: {
+      backgroundColor: 'rgb(233, 37, 43)'
+    },
+
+    headerTintColor: 'rgb(225, 225, 225)',
+  }}>
+    <ComboStack.Screen name="WorkoutList" component={WorkoutListScreen} options={{ title: "" }} />
+    <ComboStack.Screen name="WorkoutDetail" component={WorkoutDetailScreen} options={{ title: "" }} />
+    <ComboStack.Screen name="Sparring" component={SparringScreen} options={{ title: "" }} />
+    <ComboStack.Screen name="PunchToStart" component={PunchToStartScreen} options={{ title: "" }} />
   </ComboStack.Navigator>
 );
 
@@ -439,7 +486,11 @@ const styles = StyleSheet.create({
     fontSize: 50,
     fontWeight: "800",
     marginBottom: "2%"
-  }
+  },
+
+  trainingButton: {
+    width: "50%", alignSelf: "center"
+  },
 });
 
 const MyTheme = {
