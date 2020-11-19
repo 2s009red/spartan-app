@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { ScrollView, View, Pressable, Image } from 'react-native';
+import { ScrollView, View, StyleSheet, Image } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { Badge, Card, Text, ListItem, Icon, Slider, Divider, Button, Input, colors, Avatar } from 'react-native-elements'
-import { MultiSlider } from '@ptomasroos/react-native-multi-slider'
+import { Badge, Card, Text, ListItem, Icon, Button, Input, Avatar } from 'react-native-elements'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 import { useTheme } from '@react-navigation/native'
 
@@ -26,8 +26,6 @@ const combos = new Map();
 combos.set(0, { title: "Flora's warmup", description: loremIpsum, id: 0, moves: [{name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}, {name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}], duration: 45 });
 combos.set(1, { title: "Joush's warmup", description: loremIpsum, id: 0, moves: [{name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}, {name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}], duration: 45 });
 combos.set(2, { title: "Drew's warmup", description: loremIpsum, id: 1, moves: [{name: "quick jab", speed: 1, extension: 1, duration: 1}, {name: "full punch", speed: 0.5, extension: 0.4, duration: 1}], duration: 185 });
-
-let comboCardObj = { name: "Josh's Favorite Combo", author: "Joush Padilla" }
 
 function secondsToTimestring(seconds) {
   return `${Math.floor(seconds / 60)}:${(seconds % 60).toString().padStart(2, '0')}`
@@ -58,10 +56,9 @@ function WorkoutCard(props) {
   // TODO this is limited to 3 for display purposes; we should animate this properly when user expands it
   // TODO why numToShow
   return (
-    <View style={{ margin: 20, padding: 20, borderRadius: 15, backgroundColor: 'rgb(40, 40, 40)'}}>
+    <View style={{ marginBottom: 20, padding: 20, borderRadius: 15, backgroundColor: 'rgb(40, 40, 40)'}}>
       <Text style={{ color: colors.text, fontSize: 24, fontWeight: 'bold' }}>{props.combo.title}</Text>
-      <Text style={{ color: colors.text }}>{props.combo.moves.length} moves, {secondsToTimestring(props.combo.duration)} minutes</Text>
-      <Text style={{ color: colors.text, fontSize: 15, marginBottom: 10, marginTop: 4 }}>{props.combo.description}</Text>
+      <Text style={{ color: colors.text, marginBottom: 20 }}>{props.combo.moves.length} moves, {secondsToTimestring(props.combo.duration)} minutes</Text>
 
       <View style={{ backgroundColor: 'rgb(60, 60, 60)', borderRadius: 15 }}>
       {props.combo.moves.slice(0, props.numToShow).map((move, i) => 
@@ -76,12 +73,11 @@ function ComboListItem(props) {
   const { colors } = useTheme();
   // TODO change color of badges and do not rely on 'error'
   return (
-    <ListItem containerStyle={{ borderRadius: 10, backgroundColor: 'rgb(60, 60, 60)' }}>
+    <ListItem containerStyle={{ borderRadius: 15, backgroundColor: 'rgb(60, 60, 60)' }}>
       <Badge
         value={props.index}
-        textStyle={{ fontSize: 25}}
-        badgeStyle={{ height: 30, width: 30, borderRadius: 15, borderWidth: 0 }}
-        status="error"
+        textStyle={{ fontSize: 20}}
+        badgeStyle={{ height: 30, width: 30, borderRadius: 15, borderWidth: 0, backgroundColor: colors.primary }}
       />
 
       <ListItem.Content>
@@ -96,10 +92,10 @@ function PunchToStartScreen({ route, navigation }) {
   const { colors } = useTheme();
 
   return (
-    <View style={{ justifyContent: "center", alignItems: "center" }}>
+    <View style={ styles.container }>
       <Text style={{ fontSize: 50, color: colors.text }}>Punch to start</Text>
       <Text style={{ fontSize: 30, color: colors.text }}>[insert animation here]</Text>
-      <Button buttonStyle={{ backgroundColor: colors.primary, borderRadius: 15 }} title="Stop training" 
+      <Button buttonStyle={ styles.button } title="Stop training" 
         onPress={() => {
           const data = { spar: false };
 
@@ -120,12 +116,10 @@ function PunchToStartScreen({ route, navigation }) {
 function WorkoutDetailScreen({ route, navigation }) {
   const { colors } = useTheme();
 
-  // TODO undefined seems like a weird hack
-
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={ styles.container }>
       <WorkoutCard combo={route.params.combo} key={route.params.id} numToShow={undefined} />
-      <Button buttonStyle={{ backgroundColor: colors.primary, borderRadius: 15 }} title="Start training" onPress={
+      <Button buttonStyle={ styles.button } title="Start training" onPress={
           () => {
             const data = { spar: true };
 
@@ -149,17 +143,14 @@ function WorkoutListScreen({ navigation }) {
   // TODO fix key prop
 
   return (
-    <ScrollView >
-      {/* <Text style={{ color: colors.text }}>
-        Workouts
-      </Text> */}
-    <Button buttonStyle={{ backgroundColor: colors.primary, borderRadius: 15, margin: "5%" }} onPress={() => navigation.navigate("Sparring")} title="Start sparring" />
-      <Text style={{ color: colors.text, textAlign: "center" }}>or choose from a workout below</Text>
-      {Array.from(combos, ([k, v]) =>
-        <TouchableWithoutFeedback key={k} onPress={() => navigation.navigate('WorkoutDetail', { id: k, combo: v })}>
-        <WorkoutCard combo={v} key={k} numToShow={3} />
-        </TouchableWithoutFeedback>
-      )}
+    <ScrollView contentContainerStyle={ styles.container }>
+      <Button buttonStyle={ styles.button } onPress={() => navigation.navigate("Sparring")} title="Start sparring" />
+        <Text style={{ color: colors.text, textAlign: "center" }}>or choose from a workout below</Text>
+        {Array.from(combos, ([k, v]) =>
+          <TouchableWithoutFeedback key={k} onPress={() => navigation.navigate('WorkoutDetail', { id: k, combo: v })}>
+          <WorkoutCard combo={v} key={k} numToShow={3} />
+          </TouchableWithoutFeedback>
+        )}
     </ScrollView>
   );
 }
@@ -208,36 +199,6 @@ const formatDuration = duration => {
   return `${duration.slice(0, duration.length - 2).padStart(1, '0')}:${duration.slice(duration.length - 2).padStart(2, '0')}`
 }
 
-class TimerInput extends React.Component {
-  constructor (props) {
-    super(props);
-
-    this.state = {
-      time: props.time
-    };
-  }
-
-  render() {
-    // TODO wtf is this
-    return (
-      <View style={{justifyContent: "center", alignItems: "center", flex: 1}}>
-        <Text style={{ flex: 1, fontSize: 20, textAlign: "center", color: textColor }}>{this.props.name}</Text>
-        <Input containerStyle={{ flex: 1, }} inputContainerStyle={{ borderBottomWidth: 0 }}
-          style={{ alignItems: "center", fontSize: 30, textAlign: "center", color: textColor }}
-          keyboardType="numeric"
-          value={this.state.time}
-          selectTextOnFocus
-          contextMenuHidden
-          returnKeyType="done"
-
-          caretHidden
-          onChangeText={text => this.setState({ time: formatDuration(parseInt(text.replace(':', ''))) })}
-        />
-      </View>
-    );
-  }
-}
-
 class SparringScreen extends React.Component {
   // TODO should we save default values from last time, to use this time?
   state = {
@@ -253,11 +214,18 @@ class SparringScreen extends React.Component {
 
   render() {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: "space-around" }}>
+      <View style={ styles.container }>
         <Text style={{ color: textColor }}>difficulty</Text>
+                  <DateTimePicker
+          testID="dateTimePicker"
+          is24Hour={true}
+          display="default"
+          value={new Date()}
+          mode="countdown"
+        />
         <View style={{ margin: 30, flexDirection: "row", height: 50}}>
-          <TimerInput name="round time" time="3:00" />
-          <TimerInput name="rest time" time="0:30" />
+          {/* <TimerInput name="round time" time="3:00" />
+          <TimerInput name="rest time" time="0:30" /> */}
 
           <View style={{ flex: 1 }}>
             <Text style={{ fontSize: 20, textAlign: "center", color: textColor }}>num rounds</Text>
@@ -272,8 +240,7 @@ class SparringScreen extends React.Component {
         </View>
         <View style={{flexDirection: "row"}}>
           <Button
-            style={{ margin: 90 }}
-            buttonStyle={{ backgroundColor: "red" }}
+            buttonStyle={ styles.button }
             title="Start"
             onPress={() => {
               const data = { spar: true };
@@ -302,7 +269,7 @@ function FeedCard(props) {
   // TODO this is limited to 3 for display purposes; we should animate this properly when user expands it
   // TODO why numToShow
   return (
-    <View style={{ margin: 20, padding: 20, borderRadius: 15, backgroundColor: 'rgb(40, 40, 40)'}}>
+    <View style={{ padding: 20, borderRadius: 15, backgroundColor: 'rgb(40, 40, 40)'}}>
       <AvatarWithSubtitle subtitle={props.subtitle} name={props.name} uri={props.picture} />
       <View style={{ backgroundColor: 'rgb(60, 60, 60)', marginTop: 10, borderRadius: 15, flexDirection: "row", alignItems: "center", width: "100%" }}>
         <Image source={ require('./assets/achievement-trophy.png') } 
@@ -315,9 +282,9 @@ function FeedCard(props) {
   );
 }
 
-function HomeScreen() {
+function FeedScreen() {
   return (
-    <ScrollView contentContainerStyle={{ alignItems: "center", justifyContent: "flex-start", }}>
+    <ScrollView contentContainerStyle={ styles.container }>
       <FeedCard subtitle="earned an achievement" description={loremIpsum} name="Joush Padilla" picture={joushPicture} />
       <FeedCard subtitle="earned an achievement" description={loremIpsum} name="Drew Callahan" picture={drewPicture} />
       <FeedCard subtitle="did a thing" description={loremIpsum} name="Joush Padilla" picture={joushPicture} />
@@ -332,9 +299,13 @@ function ActivityScreen() {
 
   return (
 
-    <View>
+    <View style={ styles.container }>
       <Text style={{ fontSize: 50, color: colors.text }}>debug screen</Text>
       <Text style={{ fontSize: 50, color: colors.text }}>DO NOT SHOW DURING DEMO</Text>
+      <Button buttonStyle={ styles.button } title="punch" 
+        onPress={() => {
+          fetch(`${SERVER_IP}/punch`);
+        }} />
     </View>
 
   );
@@ -346,9 +317,9 @@ const ComboStack = createStackNavigator();
 const FeedStack = createStackNavigator();
 
 // TODO wtf this is terrible
-const FeedScreen = () => (
+const Feed = () => (
   <FeedStack.Navigator>
-    <FeedStack.Screen name="HomeScreen" component={HomeScreen} />
+    <FeedStack.Screen name="FeedScreen" component={FeedScreen}  options={{ title: "Feed" }} />
   </FeedStack.Navigator>
 );
 
@@ -362,19 +333,17 @@ const WorkoutScreen = () => (
 );
 
 export default function App() {
-  // TODO this fist is really ugly
-
   return (
     <NavigationContainer theme={MyTheme}>
       <Tab.Navigator initialRouteName="Workouts">
-        <Tab.Screen name="Feed" component={FeedScreen} 
+        <Tab.Screen name="Feed" component={Feed} 
           options={{
             tabBarIcon: ({ color }) => <Icon name="home" color={color} />,
           }}
         />
         <Tab.Screen name="Workouts" component={WorkoutScreen} 
           options={{
-            tabBarIcon: ({ color }) => <Icon name="fist-raised" color={color} type="font-awesome-5" />,
+            tabBarIcon: ({ color }) => <Icon name="boxing-glove" color={color} type="material-community" />,
           }}
         />
         <Tab.Screen name="Activity" component={ActivityScreen} 
@@ -387,11 +356,29 @@ export default function App() {
   );
 }
 
-// const styles = StyleSheet.create({
-//   parent: {
-//     backgroundColor: Colors.BACKGROUND_COLOR,
-//   }
-// });
+const styles = StyleSheet.create({
+  parent: {
+    backgroundColor: Colors.BACKGROUND_COLOR,
+  },
+
+  text: {
+    color: 'rgb(225, 225, 225)',
+  },
+
+  button: {
+    borderRadius: 15,
+    backgroundColor: 'rgb(233, 37, 43)'
+  },
+  
+  container: { 
+    margin: "5%%",
+  },
+
+  title: {
+    fontSize: 50,
+    fontWeight: "800",
+  }
+});
 
 const MyTheme = {
   dark: false,
