@@ -105,6 +105,7 @@ function PunchToStartScreen({ route, navigation }) {
     <View style={ styles.container }>
       <Text style={{ fontSize: 50, color: colors.text }}>Punch to start</Text>
       <Text style={{ fontSize: 30, color: colors.text }}>[insert animation here]</Text>
+      <Text style={{ fontSize: 30, color: colors.text }}>will fix later; you don't need a screenshot of this screen anyway</Text>
       <Button buttonStyle={ styles.button } title="Stop training" 
         onPress={() => {
           const data = { spar: false };
@@ -132,7 +133,10 @@ function WorkoutDetailScreen({ route, navigation }) {
         Start workout
       </Text>
       <WorkoutCard combo={route.params.combo} key={route.params.id} numToShow={undefined} />
-      <Button buttonStyle={[ styles.button, styles.trainingButton ]} title="Begin training" onPress={
+      <Button 
+        buttonStyle={[ styles.button, styles.trainingButton ]} 
+        titleStyle={[ styles.text, styles.trainingButtonTitle ]}
+        title="Begin training" onPress={
           () => {
             const data = { spar: true };
 
@@ -314,8 +318,8 @@ class SparringScreen extends React.Component {
         </View>
           <Button
             buttonStyle={[ styles.button, styles.trainingButton ]}
-            titleStyle={[ styles.text, { fontSize: 30 } ]}
-            title="Start training"
+            titleStyle={[ styles.text, styles.trainingButtonTitle ]}
+            title="Begin training"
             onPress={() => {
               const data = { spar: true };
 
@@ -364,9 +368,9 @@ function FeedCard(props) {
         {props.achievement && <Image source={ require('./assets/achievement-trophy.png') } 
           style={{ width: 50, height: 50, margin: 10 }}
         />}
-        <View style={{ flexDirection: "column", justifyContent: "flex-start" }}>
-        {props.title && <Text style={{ color: colors.text, fontSize: 20, fontWeight: "600", marginHorizontal: 10,  }}>{props.title}</Text>}
-        <Text style={{ color: colors.text, fontSize: 15, margin: 10 }}>{props.description}</Text>
+        <View style={{ flexDirection: "column", justifyContent: "flex-start", padding: 10 }}>
+          {props.title && <Text style={{ color: colors.text, fontSize: 20, fontWeight: "600",  }}>{props.title}</Text>}
+          <Text style={{ color: colors.text, fontSize: 15, }}>{props.description}</Text>
         </View>
       </View>
     </View>
@@ -491,6 +495,10 @@ const styles = StyleSheet.create({
   trainingButton: {
     width: "50%", alignSelf: "center"
   },
+
+  trainingButtonTitle: {
+    fontSize: 30,
+  }
 });
 
 const MyTheme = {
