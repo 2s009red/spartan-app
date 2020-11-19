@@ -253,7 +253,7 @@ class SparringScreen extends React.Component {
                 body: JSON.stringify(data),
               });
               
-              this.props.navigation.navigate("WorkoutList")
+              this.props.navigation.navigate("PunchToStart")
             }}
           />
         </View>
@@ -335,7 +335,7 @@ const WorkoutScreen = () => (
 export default function App() {
   return (
     <NavigationContainer theme={MyTheme}>
-      <Tab.Navigator initialRouteName="Workouts">
+      <Tab.Navigator initialRouteName="Feed">
         <Tab.Screen name="Feed" component={Feed} 
           options={{
             tabBarIcon: ({ color }) => <Icon name="home" color={color} />,
