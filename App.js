@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { Badge, Card, Text, ListItem, Icon, Button, Input, Avatar } from 'react-native-elements'
+import { Badge, Card, Text, ListItem, Icon, Button, Input, Avatar, Divider } from 'react-native-elements'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 import { useTheme } from '@react-navigation/native'
@@ -23,13 +23,19 @@ const textColor = 'rgb(225, 225, 225)'
 // Map ID to combo
 // TODO figure out this text
 const combos = new Map();
-combos.set(0, { title: "Flora's warmup", user: "flora", id: 0, moves: [{name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}, {name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}], duration: 45 });
-combos.set(1, { title: "Joush's warmup", user: "joush", id: 0, moves: [{name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}, {name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}], duration: 45 });
-combos.set(2, { title: "Drew's warmup", user: "drew", id: 1, moves: [{name: "quick jab", speed: 1, extension: 1, duration: 1}, {name: "full punch", speed: 0.5, extension: 0.4, duration: 1}], duration: 185 });
+combos.set(0, { title: "Flora's warmup", user: "flora", id: 0, moves: [
+  {name: "slow jab", speed: 0.3, extension: 1, duration: 1}, 
+  {name: "quick jab", speed: 1, extension: 1, duration: 1}, 
+  {name: "feint", speed: 0.7, extension: 0.3, duration: 1}, 
+  {name: "slow jab", speed: 0.3, extension: 1, duration: 1}, 
+  {name: "quick jab", speed: 1, extension: 1, duration: 1}, 
+  {name: "feint", speed: 0.7, extension: 0.3, duration: 1}], duration: 45 });
+combos.set(1, { title: "Drew's warmup", user: "drew", id: 1, moves: [{name: "quick jab", speed: 1, extension: 1, duration: 1}, {name: "full punch", speed: 0.5, extension: 0.4, duration: 1}], duration: 15 });
+combos.set(2, { title: "Joush's warmup", user: "joush", id: 0, moves: [{name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}, {name: "quick jab", speed: 1, extension: 0.7, duration: 1}, {name: "full punch", speed: 0.7, extension: 1, duration: 1}, {name: "feint", speed: 1, extension: 0.3, duration: 1}], duration: 45 });
 
 const users = new Map();
 users.set("flora", { name: "Flora Klise", description: "Spartan expert", picture: "https://firebasestorage.googleapis.com/v0/b/mit2s009.appspot.com/o/profiles%2Fthumb_fklise.jpg?alt=media&token=d3e7040e-4838-477d-9df2-7deb850a76b1" })
-users.set("drew", { name: "Drew Callahan", description: "Spartan beginner", picture: "https://firebasestorage.googleapis.com/v0/b/mit2s009.appspot.com/o/profiles%2Fthumb_andrewbc.jpg?alt=media&token=c7315a11-e854-4686-bf6f-26926f3270f1" })
+users.set("drew", { name: "Drew Callahan", description: "Spartan trainer", picture: "https://firebasestorage.googleapis.com/v0/b/mit2s009.appspot.com/o/profiles%2Fthumb_andrewbc.jpg?alt=media&token=c7315a11-e854-4686-bf6f-26926f3270f1" })
 users.set("joush", { name: "Joush Padilla", description: "Spartan extraordinaire", picture: "https://firebasestorage.googleapis.com/v0/b/mit2s009.appspot.com/o/profiles%2Fthumb_jgp7.jpg?alt=media&token=98bc24c8-fdb7-4221-876a-323a1ef748a7" })
 
 function secondsToTimestring(seconds) {
@@ -104,8 +110,6 @@ function PunchToStartScreen({ route, navigation }) {
   return (
     <View style={ styles.container }>
       <Text style={{ fontSize: 50, color: colors.text }}>Punch to start</Text>
-      <Text style={{ fontSize: 30, color: colors.text }}>[insert animation here]</Text>
-      <Text style={{ fontSize: 30, color: colors.text }}>will fix later; you don't need a screenshot of this screen anyway</Text>
       <Button buttonStyle={ styles.button } title="Stop training" 
         onPress={() => {
           const data = { spar: false };
@@ -129,7 +133,7 @@ function WorkoutDetailScreen({ route, navigation }) {
 
   return (
     <ScrollView contentContainerStyle={ styles.container }>
-      <Text style={[ styles.text, styles.title ]}>
+      <Text style={[ styles.text, styles.title, { marginBottom: 20 } ]}>
         Start workout
       </Text>
       <WorkoutCard combo={route.params.combo} key={route.params.id} numToShow={undefined} />
@@ -138,17 +142,17 @@ function WorkoutDetailScreen({ route, navigation }) {
         titleStyle={[ styles.text, styles.trainingButtonTitle ]}
         title="Begin training" onPress={
           () => {
-            const data = { spar: true };
+            // const data = { spar: true };
 
-            fetch(`${SERVER_IP}/spar`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(data),
-            });
+            // fetch(`${SERVER_IP}/spar`, {
+            //   method: 'POST',
+            //   headers: {
+            //     'Content-Type': 'application/json',
+            //   },
+            //   body: JSON.stringify(data),
+            // });
 
-            navigation.navigate("PunchToStart")
+            navigation.navigate("WorkoutList")
           }
         } />
     </ScrollView>
@@ -164,13 +168,20 @@ function WorkoutListScreen({ navigation }) {
       <Text style={[ styles.text, styles.title ]}>
         Workouts
       </Text>
-      <Button buttonStyle={ styles.button } onPress={() => navigation.navigate("Sparring")} title="Start sparring" />
-        <Text style={{ color: colors.text, textAlign: "center" }}>or choose from a workout below</Text>
-        {Array.from(combos, ([k, v]) =>
-          <TouchableWithoutFeedback key={k} onPress={() => navigation.navigate('WorkoutDetail', { id: k, combo: v })}>
+      {/* <Button buttonStyle={styles.button} onPress={() => navigation.navigate("Sparring")} title="Start sparring" /> */}
+      <TouchableWithoutFeedback onPress={() => navigation.navigate("Sparring")}>
+        <SparringCard />
+      </TouchableWithoutFeedback>
+      {/* <Text style={{ color: colors.text, textAlign: "center" }}>or choose from a workout below</Text> */}
+      <Divider style={{ marginVertical: 15 }} />
+      <Text style={[ styles.text, { fontSize: 35, fontWeight: "700", marginBottom: 20 } ]}>
+        Saved workouts
+      </Text>
+      {Array.from(combos, ([k, v]) =>
+        <TouchableWithoutFeedback key={k} onPress={() => navigation.navigate('WorkoutDetail', { id: k, combo: v })}>
           <WorkoutCard combo={v} key={k} numToShow={3} />
-          </TouchableWithoutFeedback>
-        )}
+        </TouchableWithoutFeedback>
+      )}
     </ScrollView>
   );
 }
@@ -221,8 +232,20 @@ const formatDuration = duration => {
 
 function SparringCard() {
   return (
-    <View>
-      Jump right into a session with randomized [something]. We'll [something]. You bring the moves, we'll bring the [something].
+    <View style={{ marginVertical: 15, padding: 20, borderRadius: 15, backgroundColor: 'rgb(40, 40, 40)'}}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <View style={{ flexDirection: "column" }}>
+          <Text style={[ styles.text, { fontSize: 24, fontWeight: 'bold' }]}>Sparring mode</Text>
+          <Text style={[ styles.text, { marginBottom: 20, fontSize: 18 } ]}>Jump right into a session with randomized punches. We'll bring the hits, you bring the moves.</Text>
+        </View>
+      </View>
+
+      {/* <View style={{ backgroundColor: 'rgb(60, 60, 60)', borderRadius: 15, padding: 20, marginTop: 15 }}> */}
+      <View style={{ backgroundColor: 'rgb(233, 37, 43)', borderRadius: 15, padding: 20, marginTop: 15 }}>
+        <Text style={[ styles.text, { fontSize: 25, fontWeight: "600", textAlign: "center" } ]}>
+          Start sparring
+        </Text>
+      </View>
     </View>
   );
 }
@@ -245,15 +268,16 @@ class SparringScreen extends React.Component {
         Sparring
       </Text>
 
-        <View style={{ backgroundColor: 'rgb(40, 40, 40)', padding: 20, borderRadius: 15 }}>
+        <View style={{ backgroundColor: 'rgb(40, 40, 40)', padding: 20, marginVertical: 30, borderRadius: 15 }}>
           <View>
-            <Text style={[ styles.text, { fontSize: 30, fontWeight: '600' } ]}>Intensity</Text>
+            <Text style={[ styles.text, { fontSize: 30, fontWeight: '600' } ]}>Difficulty</Text>
             <ListItem onPress={() => this.setState({ difficulty: 0 })}
               containerStyle={{ backgroundColor: this.state.difficulty === 0 ? 'rgb(60, 60, 60)' : 'rgb(40, 40, 40)', borderRadius: 15 }} >
               <Icon name="thermometer-empty" type="font-awesome" color='rgb(225, 225, 225)' size={35} />
               <ListItem.Content>
-                <ListItem.Title style={styles.text}>Low</ListItem.Title>
+                <ListItem.Title style={styles.text}>Beginner</ListItem.Title>
               </ListItem.Content>
+              {/* <Text style={[ styles.text, { fontStyle: "italic" } ]}>Easy warmup</Text> */}
               {this.state.difficulty == 0 &&
                 <ListItem.CheckBox checked checkedIcon="check" checkedColor='rgb(233, 37, 43)' />
               }
@@ -262,8 +286,9 @@ class SparringScreen extends React.Component {
               containerStyle={{ backgroundColor: this.state.difficulty === 1 ? 'rgb(60, 60, 60)' : 'rgb(40, 40, 40)', borderRadius: 15 }} >
               <Icon name="thermometer-half" type="font-awesome" color='rgb(225, 225, 225)' size={35} />
               <ListItem.Content>
-                <ListItem.Title style={styles.text}>Medium</ListItem.Title>
+                <ListItem.Title style={styles.text}>Intermediate</ListItem.Title>
               </ListItem.Content>
+              {/* <Text style={[ styles.text, { fontStyle: "italic" } ]}></Text> */}
               {this.state.difficulty == 1 &&
                 <ListItem.CheckBox checked checkedIcon="check" checkedColor='rgb(233, 37, 43)' />
               }
@@ -272,8 +297,9 @@ class SparringScreen extends React.Component {
               containerStyle={{ backgroundColor: this.state.difficulty === 2 ? 'rgb(60, 60, 60)' : 'rgb(40, 40, 40)', borderRadius: 15 }} >
               <Icon name="thermometer-full" type="font-awesome" color='rgb(225, 225, 225)' size={35} />
               <ListItem.Content>
-                <ListItem.Title style={styles.text}>High</ListItem.Title>
+                <ListItem.Title style={styles.text}>Advanced</ListItem.Title>
               </ListItem.Content>
+              {/* <Text style={[ styles.text, { fontStyle: "italic" } ]}>Turn up the heat</Text> */}
               {this.state.difficulty == 2 &&
                 <ListItem.CheckBox checked checkedIcon="check" checkedColor='rgb(233, 37, 43)' />
               }
@@ -281,7 +307,7 @@ class SparringScreen extends React.Component {
           </View>
         </View>
 
-        <View style={{ margin: 30, flexDirection: "row", height: 50 }}>
+        <View style={{ margin: 50, flexDirection: "row", height: 50 }}>
           {/* <TimerInput name="round time" time="3:00" />
           <TimerInput name="rest time" time="0:30" /> */}
 
@@ -331,7 +357,7 @@ class SparringScreen extends React.Component {
                 body: JSON.stringify(data),
               });
               
-              this.props.navigation.navigate("PunchToStart")
+              this.props.navigation.navigate("WorkoutList")
             }}
           />
       </View>
@@ -343,7 +369,7 @@ function FeedPhotoCard(props) {
   const { colors } = useTheme();
 
   return (
-    <View style={{ padding: 20, borderRadius: 15, marginBottom: 30, backgroundColor: 'rgb(40, 40, 40)'}}>
+    <View style={{ padding: 20, borderRadius: 15, marginVertical: 15, backgroundColor: 'rgb(40, 40, 40)'}}>
       <AvatarWithSubtitle subtitle={props.subtitle} name={props.name} uri={props.picture} />
       <View style={{ flexDirection: "row", alignItems: "center", width: "100%", justifyContent: "space-between" }}>
         {props.photos.map(photo => <Image source={{ uri: photo }} 
@@ -362,7 +388,7 @@ function FeedCard(props) {
   // TODO this is limited to 3 for display purposes; we should animate this properly when user expands it
   // TODO why numToShow
   return (
-    <View style={{ padding: 20, borderRadius: 15, marginBottom: 30, backgroundColor: 'rgb(40, 40, 40)'}}>
+    <View style={{ padding: 20, borderRadius: 15, marginVertical: 15, backgroundColor: 'rgb(40, 40, 40)'}}>
       <AvatarWithSubtitle subtitle={props.subtitle} name={props.name} uri={props.picture} />
       <View style={{ backgroundColor: 'rgb(60, 60, 60)',  borderRadius: 15, flexDirection: "row", alignItems: "center", width: "100%" }}>
         {props.achievement && <Image source={ require('./assets/achievement-trophy.png') } 
@@ -380,9 +406,12 @@ function FeedCard(props) {
 function FeedScreen() {
   return (
     <ScrollView contentContainerStyle={ styles.container }>
-      <Text style={[ styles.text, styles.title ]}>
-        Feed
-      </Text>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Text style={[ styles.text, styles.title ]}>
+          Feed
+        </Text>
+        <Avatar rounded size="medium" source={{ uri: users.get('flora').picture }} containerStyle={{ alignSelf: "center" }} />
+      </View>
       <FeedCard subtitle="earned an achievement" description="Top your local Spartan leaderboards for three weeks in a row" title="Spartan master" name="Joush Padilla" picture={users.get('joush').picture} achievement />
       <FeedPhotoCard subtitle="posted some photos" description="Got a pretty sweet workout with Spartan today!" name="Drew Callahan" picture={users.get('drew').picture} photos={["https://i.imgur.com/vYtb2ya.jpg", "https://i.imgur.com/F9LGY06.jpg"]} />
       <FeedCard subtitle="earned an achievement" description="Beat the red critter in a boxing match" title="Spartacus" name="Joush Padilla" picture={users.get('joush').picture} achievement />
@@ -396,15 +425,52 @@ function ActivityScreen() {
   return (
     <View style={ styles.container }>
       <Text style={{ fontSize: 50, color: colors.text }}>debug screen</Text>
-      <Text style={{ fontSize: 50, color: colors.text }}>DO NOT SHOW DURING DEMO</Text>
-      <Button buttonStyle={ styles.button } title="punch" 
+      <Text style={{ fontSize: 50, color: colors.text }}>@drew: don't fuck this up ;)</Text>
+      <Button buttonStyle={[ styles.button, { marginVertical: 20 } ]} title="punch" titleStyle={{ fontSize: 50 }}
         onPress={() => {
           fetch(`${SERVER_IP}/punch`);
         }} />
+      <Button buttonStyle={[ styles.button, { marginVertical: 20 } ]} title="punch x2" titleStyle={{ fontSize: 50 }}
+        onPress={() => {
+          fetch(`${SERVER_IP}/doublepunch`);
+        }} />
+      <Button buttonStyle={[ styles.button, { marginVertical: 20 } ]} title="feint" titleStyle={{ fontSize: 50 }}
+        onPress={() => {
+          fetch(`${SERVER_IP}/feint`);
+        }} />
+      <Button buttonStyle={[ styles.button, { marginVertical: 20 } ]} title="start combo" titleStyle={{ fontSize: 50 }}
+        onPress={() => {
+          fetch(`${SERVER_IP}/docombo`);
+        }} />
+      <Button buttonStyle={[ styles.button, { marginVertical: 20 } ]} title="stop sparring" titleStyle={{ fontSize: 50 }}
+        onPress={() => {
+          const data = { spar: false };
+
+          fetch(`${SERVER_IP}/spar`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          });
+        }} />
+      {/* TODO make button that punches twice <Button buttonStyle={ styles.button } title="punch x2" 
+        onPress={() => {
+          fetch(`${SERVER_IP}/command`);
+        }} /> */}
     </View>
   );
 }
 
+
+function LogoTitle() {
+  return (
+    <Image
+      style={{ width: 164, height: 42 }}
+      source={require('./assets/logoWhite.png')}
+    />
+  );
+}
 
 const Tab = createBottomTabNavigator();
 const ComboStack = createStackNavigator();
@@ -419,7 +485,7 @@ const Feed = () => (
 
     headerTintColor: 'rgb(225, 225, 225)',
   }}>
-    <FeedStack.Screen name="FeedScreen" component={FeedScreen}  options={{ title: "" }} />
+    <FeedStack.Screen name="FeedScreen" component={FeedScreen} options={{ headerTitle: props => <LogoTitle {...props} /> }} />
   </FeedStack.Navigator>
 );
 
@@ -431,10 +497,10 @@ const WorkoutScreen = () => (
 
     headerTintColor: 'rgb(225, 225, 225)',
   }}>
-    <ComboStack.Screen name="WorkoutList" component={WorkoutListScreen} options={{ title: "" }} />
-    <ComboStack.Screen name="WorkoutDetail" component={WorkoutDetailScreen} options={{ title: "" }} />
-    <ComboStack.Screen name="Sparring" component={SparringScreen} options={{ title: "" }} />
-    <ComboStack.Screen name="PunchToStart" component={PunchToStartScreen} options={{ title: "" }} />
+    <ComboStack.Screen name="WorkoutList" component={WorkoutListScreen} options={{ title: "", headerTitle: props => <LogoTitle {...props} /> }} />
+    <ComboStack.Screen name="WorkoutDetail" component={WorkoutDetailScreen} options={{ title: "", headerTitle: props => <LogoTitle {...props} /> }} />
+    <ComboStack.Screen name="Sparring" component={SparringScreen} options={{ title: "", headerTitle: props => <LogoTitle {...props} /> }} />
+    <ComboStack.Screen name="PunchToStart" component={PunchToStartScreen} options={{ title: "", headerTitle: props => <LogoTitle {...props} /> }} />
   </ComboStack.Navigator>
 );
 
@@ -489,7 +555,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 50,
     fontWeight: "800",
-    marginBottom: "2%"
   },
 
   trainingButton: {
@@ -497,7 +562,8 @@ const styles = StyleSheet.create({
   },
 
   trainingButtonTitle: {
-    fontSize: 30,
+    fontSize: 25,
+    fontWeight: "600"
   }
 });
 
